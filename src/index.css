@@ -1,0 +1,76 @@
+*{
+  box-sizing: border-box;
+}
+body{
+  background: linear-gradient(32deg,rgb(6, 19, 33) 7%, rgb(9, 47, 79) 50%, rgb(32, 57, 128) 100%);
+  height: 100vh;
+  padding: 0;
+  margin: 0;
+}
+.header{
+  background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.7)),url("https://m.media-amazon.com/images/M/MV5BOTg4NTBiZDAtZTc0YS00NzZlLTg4Y2ItNGQ3M2ZlMDM5MWQzXkEyXkFqcGc@._V1_SX300.jpg");
+    background-repeat: repeat, repeat;
+    background-size: auto, auto;
+  background-repeat: no-repeat;
+  background-position: ;
+  background-size: cover;
+}
+.box-movies-header{
+  width: 1200px;
+  margin: 0 auto;
+  padding: 50px 0;
+}
+/* .box-select{
+  display: flex;
+  justify-content: space-around;
+} */
+.tozeh{
+  flex-direction: column;
+  width: 500px;
+  margin-left: 80px;
+  color: #FAF9EE;
+}
+.tozeh>div{
+  width: 100%;
+  color: #DDDAD0;
+}
+.photo-title {
+  box-shadow: rgba(255, 255, 255, 0.09) 0px 5px 15px;
+  border-radius: 16px;
+
+}
+
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+.wrpper-border{
+  border-top: 1px solid  #00000063;
+  border-bottom: 1px solid  #00000063;
+}
+
+.disply-flex {
+  display: flex;
+}
+
+.justf-around {
+  justify-content: space-around;
+}
+.justf-between {
+  justify-content: space-between;
+}
+.justf-center {
+  justify-content: center;
+}
+.align-center{
+  align-items: center;
+}
+
+.title{
+  font-size: 2rem;
+}
+.color-gray{
+  color: rgb(194, 191, 191);
+}
