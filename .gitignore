@@ -28,11 +28,11 @@ yarn-error.log*
 # Ignore the folder src/tamrinApi and all its contents
 src/tamrinApi/
 
-# Ignore the entire src/App folder
-src/App/
+# Ignore the entire src/App.js file
+src/App.js
 
-# Ignore the entire src/App_1 folder
-src/App_1/
+# Ignore the entire src/App_1.js file
+src/App_1.js
 
 # Ignore the entire all folder 
 all/
