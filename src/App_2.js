@@ -11,10 +11,7 @@ export default function App() {
     return (
         <div>
             <Header movieSelected={movieSelected} />
-
             <Main setMovieSelected={setMovieSelected} />
-
-            {/* <Loading /> */}
         </div>
     )
 }
@@ -23,9 +20,9 @@ function Header({ movieSelected }) {
 
     const [getMovie, setGetMovie] = useState({})
     const [photo, setphoto] = useState("https://m.media-amazon.com/images/M/MV5BOTg4NTBiZDAtZTc0YS00NzZlLTg4Y2ItNGQ3M2ZlMDM5MWQzXkEyXkFqcGc@._V1_SX300.jpg")
-
     const [loadingHeader, setLoadingHeader] = useState(true)
-
+    const [numberChangeStar, setNumberChangeStar] = useState()
+    const [isOpen, setIsOpen] = useState(false)
 
     useEffect(function () {
         async function getAllDataMovie() {
@@ -46,39 +43,73 @@ function Header({ movieSelected }) {
 
     return (
         <>
-            {loadingHeader ? <LoadingMovieHeader /> :
-                <div className="header" style={{
-                    background: ` linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.7)),url("${photo}")  no-repeat  0% 0%  / cover`,
-                }}>
+            {/* {loadingHeader ? <LoadingMovieHeader /> : */}
+            <div className="header" style={{
+                background: ` linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.7)),url("${photo}")  no-repeat  0% 0%  / cover`,
+            }}>
 
-                    <div className="box-movies-header disply-flex ">
-                        <img src={getMovie.Poster} alt="" style={{
-                            borderRadius: "16px", width: "207px",
-                            height: "321px"
-                        }} />
-                        {/* <Photo url={ } borderRadius={16} /> */}
-                        <div className="tozeh disply-flex " style={{ width: "100%" }}>
-                            <h1>{getMovie.Title}</h1>
-                            <div className="wrpper-border disply-flex justf-between align-center">
-                                <ImdbRot roting={getMovie.imdbRating} />
-                                <h2>{getMovie.Country}</h2>
+                <div className="box-movies-header disply-flex ">
+                    <img src={getMovie.Poster} alt="" style={{
+                        borderRadius: "16px", width: "207px",
+                        height: "321px"
+                    }} />
+                    {/* <Photo url={ } borderRadius={16} /> */}
+                    <div className="tozeh disply-flex " style={{ width: "100%" }}>
+                        <h1>{getMovie.Title}</h1>
+                        <div className="wrpper-border disply-flex justf-between align-center">
+                            <ImdbRot roting={getMovie.imdbRating} />
+                            <h2>{getMovie.Country}</h2>
 
-                                <h2>{getMovie.Runtime}</h2>
+                            <h2>{getMovie.Runtime}</h2>
 
-                                <h2>{getMovie.Year}</h2>
+                            <h2>{getMovie.Year}</h2>
 
-                            </div>
-                            <div className="About-creators">
-                                <SelectStar />
-                            </div>
-                            <p>{getMovie.Plot}</p>
                         </div>
+                        <div onClick={() => setIsOpen(true)} className="open">
+                            ⭐ Rate
+                        </div>
+                        {isOpen && <StarChaning setNumberChangeStar={setNumberChangeStar} numberChangeStar={numberChangeStar} click={setIsOpen} />}
+
+                        <p>{getMovie.Plot}</p>
                     </div>
-                </div>}
+                </div>
+            </div>
+            {/* } */}
         </>
 
     )
 }
+
+function StarChaning({ setNumberChangeStar, numberChangeStar, click }) {
+
+
+    const arrsttu = [
+        { ms: " Very Poor😞", color: "red" },
+        { ms: " Poor😕", color: "#ff3d3d" },
+        { ms: " Fairly Bad 😐", color: "#853232" },
+        { ms: " Below Average🙁", color: "#ff8300" },
+        { ms: " Average😌", color: "#ffef00" },
+        { ms: " Above Average🙂", color: "#c7ff00" },
+        { ms: " Good😃", color: "rgb(235, 255, 0)" },
+        { ms: " Very Good😄", color: "#80ff00" },
+        { ms: " Excellent🤩", color: "rgb(0, 222, 45)" },
+        { ms: "Perfec 🌟", color: "green" },]
+
+
+    // { numberChangeStar && console.log(arrsttu[numberChangeStar].color); }
+    return (
+        <div className="poup">
+            <div className="star disply-flex  justf-center">
+                <div className="close" onClick={() => click(false)}>❌</div>
+                {/* <h1 className="star-rater">⭐{numberChangeStar}</h1> */}
+                {numberChangeStar && <h1 style={{ color: arrsttu[numberChangeStar - 1].color }}>{arrsttu[numberChangeStar - 1].ms}</h1>}
+                <SelectStar setNumberChangeStar={setNumberChangeStar} size={"40px"} />
+                <button>send</button>
+            </div>
+        </div>
+    )
+}
+
 function LoadingMovieHeader() {
     return (
         <div className="disply-flex justf-center align-center" style={{ height: "55vh" }}>
