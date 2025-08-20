@@ -1,51 +1,93 @@
 import { useEffect, useState } from "react";
 import SelectStar from "./selectStar";
-
+import { Commet, ThreeDot } from 'react-loading-indicators';
 
 const Key = "ea397b57"
+
+
+
 export default function App() {
+    const [movieSelected, setMovieSelected] = useState("tt4158110");
     return (
         <div>
-            <Header />
-            <Main />
+            <Header movieSelected={movieSelected} />
+
+            <Main setMovieSelected={setMovieSelected} />
+
+            {/* <Loading /> */}
         </div>
     )
 }
 
-function Header() {
+function Header({ movieSelected }) {
+
+    const [getMovie, setGetMovie] = useState({})
+    const [photo, setphoto] = useState("https://m.media-amazon.com/images/M/MV5BOTg4NTBiZDAtZTc0YS00NzZlLTg4Y2ItNGQ3M2ZlMDM5MWQzXkEyXkFqcGc@._V1_SX300.jpg")
+
+    const [loadingHeader, setLoadingHeader] = useState(true)
+
+
+    useEffect(function () {
+        async function getAllDataMovie() {
+            setLoadingHeader(true)
+            const res = await fetch(`http://www.omdbapi.com/?apikey=${Key}&i=${movieSelected}`);
+            const resPhoto = await fetch(`http://img.omdbapi.com/?apikey=${Key}&i=${movieSelected}`)
+
+            console.log(res);
+            const Data = await res.json();
+            console.log(Data);
+            setGetMovie(Data)
+            setphoto(resPhoto.url);
+            setLoadingHeader(false)
+        }
+        getAllDataMovie()
+    }, [movieSelected])
+
+
     return (
-        <div className="header">
+        <>
+            {loadingHeader ? <LoadingMovieHeader /> :
+                <div className="header" style={{
+                    background: ` linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.7)),url("${photo}")  no-repeat  0% 0%  / cover`,
+                }}>
 
-            <div className="box-movies-header disply-flex ">
+                    <div className="box-movies-header disply-flex ">
+                        <img src={getMovie.Poster} alt="" style={{
+                            borderRadius: "16px", width: "207px",
+                            height: "321px"
+                        }} />
+                        {/* <Photo url={ } borderRadius={16} /> */}
+                        <div className="tozeh disply-flex " style={{ width: "100%" }}>
+                            <h1>{getMovie.Title}</h1>
+                            <div className="wrpper-border disply-flex justf-between align-center">
+                                <ImdbRot roting={getMovie.imdbRating} />
+                                <h2>{getMovie.Country}</h2>
 
-                <Photo url={"https://img.uptvs.com/uploads/2020/07/Mr-Robot-s4-poster-207x290.jpg"} borderRadius={16} />
-                <div className="tozeh disply-flex " style={{ width: "100%" }}>
-                    <h1>Mr Robot</h1>
-                    <div className="wrpper-border disply-flex justf-between align-center">
-                        <ImdbRot roting={8.5} />
-                        <h2>United States, Germany</h2>
+                                <h2>{getMovie.Runtime}</h2>
 
-                        <h2>115 min</h2>
+                                <h2>{getMovie.Year}</h2>
 
-                        <h2> 2015</h2>
-
+                            </div>
+                            <div className="About-creators">
+                                <SelectStar />
+                            </div>
+                            <p>{getMovie.Plot}</p>
+                        </div>
                     </div>
-                    <div className="About-creators">
-                        <SelectStar />
-                    </div>
-                    <p>In 2035, a technophobic cop investigates a crime that may have been perpetrated by a robot, which leads to a larger threat to humanity.</p>
-                </div>
-            </div>
+                </div>}
+        </>
+
+    )
+}
+function LoadingMovieHeader() {
+    return (
+        <div className="disply-flex justf-center align-center" style={{ height: "55vh" }}>
+            <Commet color="#ffffff" size="large" text="" textColor="" />
         </div>
 
     )
 }
 
-function Photo({ url, borderRadius }) {
-    return (
-        <img src={url} alt="" className="photo-title" style={{ borderRadius }} />
-    )
-}
 
 function ImdbRot({ roting }) {
     return (<h2 className=" disply-flex align-center">
@@ -57,7 +99,7 @@ function ImdbRot({ roting }) {
 }
 
 
-function Main() {
+function Main({ setMovieSelected }) {
     // const moviesList = ["a", "b", "c", "d", "e", "f", "h    "]
     const [query, setQuery] = useState("Robot");
     const [dataMovies, SetdataMovies] = useState([])
@@ -99,9 +141,13 @@ function Main() {
     return (
         <div>
             <SendData query={query} setQuery={setQuery} />
-            {loading && <LoadingMs />}
+            {loading && <LoadingMovieList />}
             {error && <ErrorMovies error={error} />}
-            {!error && !loading && <ItemMovies moviesList={dataMovies} />}
+            {!error && !loading && <ItemMovies  >
+                <div className="wrapper-item disply-flex justf-around">
+                    {dataMovies.map(movie => <Item movie={movie} key={movie.imdbID} onClick={setMovieSelected} />)}
+                </div>
+            </ItemMovies>}
         </div>
     )
 }
@@ -114,9 +160,13 @@ function ErrorMovies({ error }) {
     )
 }
 
-function LoadingMs() {
+function LoadingMovieList() {
     return (
-        <h1 style={{ color: "#fff", textAlign: "center" }}>Loading...</h1>
+        // <h1 style={{ color: "#fff", textAlign: "center" }}>Loading...</h1>
+        <div className="disply-flex justf-center align-center" style={{ height: "300px" }}>
+            <ThreeDot color="#ffffff" size="large" text="" textColor="" />
+
+        </div>
     )
 }
 
@@ -129,17 +179,18 @@ function SendData({ query, setQuery }) {
     )
 }
 
-function ItemMovies({ moviesList }) {
+function ItemMovies({ children }) {
     return (
         <div className="wrapper-item disply-flex justf-around">
-            {moviesList.map(movie => <Item movie={movie} key={movie.imdbID} />)}
+            {/* {moviesList.map(movie => <Item movie={movie} key={movie.imdbID} />)} */}
+            {children}
         </div>
     )
 }
 
-function Item({ movie }) {
+function Item({ movie, onClick }) {
     return (
-        <div className="item  disply-flex  align-center">
+        <div className="item  disply-flex  align-center" onClick={() => onClick(movie.imdbID)}>
             <img src={movie.Poster} alt="" width={"150px"} height={"200px"} style={{ borderRadius: "inherit" }} />
             <h4 style={{ margin: "1rem 0 0 0" }}>{movie.Title}</h4>
             <p>{movie.Year}</p>

@@ -9,12 +9,12 @@ body{
   margin: 0;
 }
 .header{
-  background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.7)),url("https://m.media-amazon.com/images/M/MV5BOTg4NTBiZDAtZTc0YS00NzZlLTg4Y2ItNGQ3M2ZlMDM5MWQzXkEyXkFqcGc@._V1_SX300.jpg");
-    background-repeat: repeat, repeat;
-    background-size: auto, auto;
-  background-repeat: no-repeat;
+  /* background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.7)),url("https://m.media-amazon.com/images/M/MV5BOTg4NTBiZDAtZTc0YS00NzZlLTg4Y2ItNGQ3M2ZlMDM5MWQzXkEyXkFqcGc@._V1_SX300.jpg"); */
+    /* background-repeat: repeat, repeat;
+    background-size: auto;
+  background-repeat: no-repeat; */
   /* background-position: ; */
-  background-size: cover;
+  /* background-size: cover; */
   height: 55vh;
   display: flex;
   align-items: center;
