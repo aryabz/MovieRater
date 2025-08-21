@@ -76,6 +76,22 @@ body{
   position: absolute;
   top: -15px;
 }
+.save{
+  position: fixed;
+  right: 60px;
+  padding: 1rem;
+  background: rgba(67, 67, 67, 0.7);
+  border-radius: 20px;
+  cursor: pointer;
+}
+.save-number{
+  padding: 0.2rem 0.5rem;
+  background: blue;
+  border-radius: 50%;
+  position: absolute;
+  left: -6px;
+  top: -6px;
+}
 
 .close{
   position: absolute;
@@ -183,6 +199,51 @@ code {
   transition: all 0.3s;
 }
 
+.save-movies{
+  height: 55vh;
+  overflow-y: scroll;
+  flex-wrap: wrap;
+  align-items: baseline;
+}
+
+.wrapper-save{
+  color: rgb(255, 255, 255);
+  display: flex;
+  gap: 2rem;
+  background: #1b1b1b;
+  margin: 1rem;
+  border-radius: 16px;
+  position: relative;
+  width: 24rem;
+  height: 13rem;
+}
+
+.close-movie-save{
+  position: absolute;
+  right: 11px;
+  top: 11px;
+  color: red;
+  width: 20px;
+  cursor: pointer;
+}
+
+/* .wrapper-save__data{
+  display: flex;
+  justify-content: space-around;
+  flex-direction: column;
+} */
+
+.wrapper-save__data p {
+  margin: 0.6rem 0 0;
+}
+
+.wrapper-save__data h2 {
+  margin: 1rem  0;
+}
+
+.wrapper-save__data h3 {
+  margin: 0.5rem  0;
+}
 
 
 
@@ -190,7 +251,9 @@ code {
 
 
 
-
+/* .margin{
+  margin: 0;
+} */
 
 
 

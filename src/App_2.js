@@ -1,28 +1,48 @@
 import { useEffect, useState } from "react";
 import SelectStar from "./selectStar";
 import { Commet, ThreeDot } from 'react-loading-indicators';
+import "bootstrap-icons/font/bootstrap-icons.css";
 
 const Key = "ea397b57"
 
 
 
+
 export default function App() {
     const [movieSelected, setMovieSelected] = useState("tt4158110");
+    const [saveData, setSaveData] = useState([]);
+    const [goSave, setGoSave] = useState(false);
+
+    function selectMoviesID(id) {
+        setMovieSelected(id)
+        setGoSave(false)
+    }
+
+    function handlerDelet(id) {
+        setSaveData(SaveData => SaveData.filter(SaveData => SaveData.imdbID !== id))
+    }
+
+
     return (
-        <div>
-            <Header movieSelected={movieSelected} />
-            <Main setMovieSelected={setMovieSelected} />
+        <div>{goSave ? <div className="save-movies disply-flex">{saveData.map((Data) => <DavaSaveMovies Data={Data} onClick={handlerDelet} />)}</div> :
+            <Header movieSelected={movieSelected} saveData={saveData} setSaveData={setSaveData} clickGo={() => setGoSave(true)} />}
+            <Main setMovieSelected={selectMoviesID} />
         </div>
     )
 }
 
-function Header({ movieSelected }) {
+function Header({ movieSelected, setSaveData, saveData, clickGo }) {
 
     const [getMovie, setGetMovie] = useState({})
     const [photo, setphoto] = useState("https://m.media-amazon.com/images/M/MV5BOTg4NTBiZDAtZTc0YS00NzZlLTg4Y2ItNGQ3M2ZlMDM5MWQzXkEyXkFqcGc@._V1_SX300.jpg")
     const [loadingHeader, setLoadingHeader] = useState(true)
     const [numberChangeStar, setNumberChangeStar] = useState()
     const [isOpen, setIsOpen] = useState(false)
+
+    function handlerSaveData(data) {
+        setSaveData(SaveData => [...SaveData, { ...data, numberChangeStar }])
+        setIsOpen(false)
+    }
 
     useEffect(function () {
         async function getAllDataMovie() {
@@ -40,10 +60,16 @@ function Header({ movieSelected }) {
         getAllDataMovie()
     }, [movieSelected])
 
-
+    const operation = saveData.some((Data) => Data.Title == getMovie.Title)
     return (
         <>
-            {loadingHeader ? <LoadingMovieHeader /> :
+            {loadingHeader && <LoadingMovieHeader />}
+
+            {/* {
+
+                saveData && saveData.map((Data) => <SaveData Data={Data} />)} */}
+            {
+                !loadingHeader &&
                 <div className="header" style={{
                     background: ` linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.7)),url("${photo}")  no-repeat  0% 0%  / cover`,
                 }}>
@@ -65,22 +91,55 @@ function Header({ movieSelected }) {
                                 <h2>{getMovie.Year}</h2>
 
                             </div>
-                            <div onClick={() => setIsOpen(true)} className="open">
+                            {!operation && <div onClick={() => setIsOpen(true)} className="open">
                                 ⭐ Rate
-                            </div>
-                            {isOpen && <StarChaning setNumberChangeStar={setNumberChangeStar} numberChangeStar={numberChangeStar} click={setIsOpen} />}
+                            </div>}
+                            {isOpen && <StarChaning setNumberChangeStar={setNumberChangeStar} numberChangeStar={numberChangeStar} clickOpen={setIsOpen} clickSave={() => handlerSaveData(getMovie)} />}
 
                             <p>{getMovie.Plot}</p>
+
+                            <span className="save" onClick={clickGo}>
+                                <i class="bi bi-bookmark-fill"></i>
+                                <i className="save-number">{saveData.length}</i>
+                            </span>
                         </div>
                     </div>
                 </div>
+
+
             }
+
         </>
 
     )
 }
 
-function StarChaning({ setNumberChangeStar, numberChangeStar, click }) {
+function SaveData({ Data }) {
+    return (
+        <div style={{ height: "55vh" }}>
+            {/* <DavaSave Data={Data} /> */}
+        </div>
+    )
+}
+
+function DavaSaveMovies({ Data, onClick }) {
+    return (
+        <div style={{ color: "#fff" }} className="wrapper-save">
+            <img src={Data.Poster} alt={Data.Title} style={{ width: "8rem", borderRadius: "16px" }} />
+            <div className="wrapper-save__data">
+                <h2 className="margin">{Data.Title}</h2>
+                <ImdbRot roting={Data.imdbRating} size={20} />
+                <p className="margin">{Data.Year}</p>
+                <p className="margin">{Data.Country}</p>
+                <h3 className="margin">your start number : {Data.numberChangeStar}⭐</h3>
+                <span className="close-movie-save" onClick={() => onClick(Data.imdbID)}><i class="bi bi-x-circle text-danger"></i></span>
+            </div>
+        </div>
+    )
+}
+
+
+function StarChaning({ setNumberChangeStar, numberChangeStar, clickOpen, clickSave }) {
 
 
     const messages = [
@@ -105,10 +164,10 @@ function StarChaning({ setNumberChangeStar, numberChangeStar, click }) {
     return (
         <div className="poup">
             <div className="star disply-flex  justf-center">
-                <div className="close" onClick={() => click(false)}>❌</div>
+                <div className="close" onClick={() => clickOpen(false)}>❌</div>
                 {numberChangeStar && <h1 style={{ color }}>{messages[numberChangeStar]}</h1>}
                 <SelectStar setNumberChangeStar={setNumberChangeStar} size={"40px"} />
-                <button>send</button>
+                <button onClick={clickSave}>send</button>
             </div>
         </div>
     )
@@ -124,13 +183,14 @@ function LoadingMovieHeader() {
 }
 
 
-function ImdbRot({ roting }) {
-    return (<h2 className=" disply-flex align-center">
+function ImdbRot({ roting, size }) {
+    return (<div className=" disply-flex align-center" style={{ height: size + 5 }}>
         <span>
-            <img src="/imdb-icon.svg" alt="لوگوی IMDb" width="40" height="40" style={{ margin: "0 0.5rem" }} />
+            <img src="/imdb-icon.svg" alt="لوگوی IMDb" width={`${size}px`} height={`${size}px`} style={{ margin: "0 0.5rem" }} />
         </span>
-        {roting}
-    </h2>)
+        <h2 style={{ fontSize: `${size}px` }}>{roting}</h2>
+
+    </div>)
 }
 
 
