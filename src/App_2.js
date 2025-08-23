@@ -114,13 +114,13 @@ function Header({ movieSelected, setSaveData, saveData, clickGo }) {
     )
 }
 
-function SaveData({ Data }) {
-    return (
-        <div style={{ height: "55vh" }}>
-            {/* <DavaSave Data={Data} /> */}
-        </div>
-    )
-}
+// function SaveData({ Data }) {
+//     return (
+//         <div style={{ height: "55vh" }}>
+//             {/* <DavaSave Data={Data} /> */}
+//         </div>
+//     )
+// }
 
 function DavaSaveMovies({ Data, onClick }) {
     return (
@@ -183,7 +183,7 @@ function LoadingMovieHeader() {
 }
 
 
-function ImdbRot({ roting, size }) {
+function ImdbRot({ roting, size = 45 }) {
     return (<div className=" disply-flex align-center" style={{ height: size + 5 }}>
         <span>
             <img src="/imdb-icon.svg" alt="لوگوی IMDb" width={`${size}px`} height={`${size}px`} style={{ margin: "0 0.5rem" }} />
