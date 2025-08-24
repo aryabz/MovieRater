@@ -10,7 +10,12 @@ const Key = "ea397b57"
 
 export default function App() {
     const [movieSelected, setMovieSelected] = useState("tt4158110");
-    const [saveData, setSaveData] = useState([]);
+
+    const [saveData, setSaveData] = useState(function () {
+        const Data = localStorage.getItem("movies")
+        return JSON.parse(Data)
+    });
+
     const [goSave, setGoSave] = useState(false);
 
     function selectMoviesID(id) {
@@ -21,6 +26,10 @@ export default function App() {
     function handlerDelet(id) {
         setSaveData(SaveData => SaveData.filter(SaveData => SaveData.imdbID !== id))
     }
+
+    useEffect(function () {
+        localStorage.setItem("movies", JSON.stringify(saveData))
+    }, [saveData])
 
 
     return (
@@ -42,6 +51,7 @@ function Header({ movieSelected, setSaveData, saveData, clickGo }) {
     function handlerSaveData(data) {
         setSaveData(SaveData => [...SaveData, { ...data, numberChangeStar }])
         setIsOpen(false)
+
     }
 
     useEffect(function () {
