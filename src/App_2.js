@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import SelectStar from "./selectStar";
 import { Commet, ThreeDot } from 'react-loading-indicators';
 import "bootstrap-icons/font/bootstrap-icons.css";
+import { useFetch } from "./useFetch";
+import { useLocalStorage } from "./useLocalStorage";
 
 const Key = "ea397b57"
 
@@ -11,10 +13,7 @@ const Key = "ea397b57"
 export default function App() {
     const [movieSelected, setMovieSelected] = useState("tt4158110");
 
-    const [saveData, setSaveData] = useState(function () {
-        const Data = localStorage.getItem("movies")
-        return JSON.parse(Data)
-    });
+    const { saveData, setSaveData } = useLocalStorage([], "movies")
 
     const [goSave, setGoSave] = useState(false);
 
@@ -27,9 +26,7 @@ export default function App() {
         setSaveData(SaveData => SaveData.filter(SaveData => SaveData.imdbID !== id))
     }
 
-    useEffect(function () {
-        localStorage.setItem("movies", JSON.stringify(saveData))
-    }, [saveData])
+
 
 
     return (
@@ -42,9 +39,6 @@ export default function App() {
 
 function Header({ movieSelected, setSaveData, saveData, clickGo }) {
 
-    const [getMovie, setGetMovie] = useState({})
-    const [photo, setphoto] = useState("https://m.media-amazon.com/images/M/MV5BOTg4NTBiZDAtZTc0YS00NzZlLTg4Y2ItNGQ3M2ZlMDM5MWQzXkEyXkFqcGc@._V1_SX300.jpg")
-    const [loadingHeader, setLoadingHeader] = useState(true)
     const [numberChangeStar, setNumberChangeStar] = useState()
     const [isOpen, setIsOpen] = useState(false)
 
@@ -54,30 +48,16 @@ function Header({ movieSelected, setSaveData, saveData, clickGo }) {
 
     }
 
-    useEffect(function () {
-        async function getAllDataMovie() {
-            setLoadingHeader(true)
-            const res = await fetch(`http://www.omdbapi.com/?apikey=${Key}&i=${movieSelected}`);
-            const resPhoto = await fetch(`http://img.omdbapi.com/?apikey=${Key}&i=${movieSelected}`)
+    const { dataMovies: getMovie, error, loading: loadingHeader } = useFetch(`http://www.omdbapi.com/?apikey=${Key}&i=`, movieSelected)
+    const photo = `http://img.omdbapi.com/?apikey=${Key}&i=${movieSelected}  `
 
-            console.log(res);
-            const Data = await res.json();
-            console.log(Data);
-            setGetMovie(Data)
-            setphoto(resPhoto.url);
-            setLoadingHeader(false)
-        }
-        getAllDataMovie()
-    }, [movieSelected])
 
     const operation = saveData.some((Data) => Data.Title == getMovie.Title)
     return (
         <>
             {loadingHeader && <LoadingMovieHeader />}
 
-            {/* {
 
-                saveData && saveData.map((Data) => <SaveData Data={Data} />)} */}
             {
                 !loadingHeader &&
                 <div className="header" style={{
@@ -124,13 +104,6 @@ function Header({ movieSelected, setSaveData, saveData, clickGo }) {
     )
 }
 
-// function SaveData({ Data }) {
-//     return (
-//         <div style={{ height: "55vh" }}>
-//             {/* <DavaSave Data={Data} /> */}
-//         </div>
-//     )
-// }
 
 function DavaSaveMovies({ Data, onClick }) {
     return (
@@ -207,41 +180,12 @@ function ImdbRot({ roting, size = 45 }) {
 function Main({ setMovieSelected }) {
     // const moviesList = ["a", "b", "c", "d", "e", "f", "h    "]
     const [query, setQuery] = useState("Robot");
-    const [dataMovies, SetdataMovies] = useState([])
-    const [error, setError] = useState()
-    const [loading, setLoading] = useState()
 
 
 
+    const { dataMovies, error, loading } = useFetch(`http://www.omdbapi.com/?apikey=${Key}&s=$`, query)
 
-    useEffect(function () {
-        const controller = new AbortController()
-        async function getData() {
-            setError("")
-            setLoading(true)
-            try {
-                const res = await fetch(`http://www.omdbapi.com/?apikey=${Key}&s=${query}`, { signal: controller.signal });
-                console.log(res);
-                if (!res.ok) throw new Error("cant conecting server");
-                const Data = await res.json();
-                if (Data.Response === "False") throw new Error("not fund movies")
-                console.log(Data);
-                console.log(Data.Search);
-                SetdataMovies(Data.Search);
 
-            } catch (err) {
-                if (err.name !== "AbortError") {
-                    setError(err.message)
-                }
-            }
-            setLoading(false)
-        }
-        getData()
-
-        return function () {
-            controller.abort();
-        }
-    }, [query])
 
     return (
         <div>
@@ -287,7 +231,6 @@ function SendData({ query, setQuery }) {
 function ItemMovies({ children }) {
     return (
         <div className="wrapper-item disply-flex justf-around">
-            {/* {moviesList.map(movie => <Item movie={movie} key={movie.imdbID} />)} */}
             {children}
         </div>
     )
